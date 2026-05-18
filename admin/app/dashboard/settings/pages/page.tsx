@@ -7,7 +7,7 @@ import DashboardLayout from '@/components/layout/DashboardLayout'
 import { PageHeader, SectionHeader } from '@/components/ui/Components'
 import { api } from '@/lib/api'
 import { toast } from 'sonner'
-import { FileText, Pencil, Save, ChevronLeft, Globe } from 'lucide-react'
+import { FileText, Pencil, Save, ChevronLeft, Globe, Megaphone } from 'lucide-react'
 import RichTextEditor from '@/components/ui/RichTextEditor'
 
 interface PageData {
@@ -155,42 +155,91 @@ export default function PagesManagement() {
     )
   }
 
+  const standardPages = pages.filter(page => page.slug !== 'top-notice')
+  const noticePages = pages.filter(page => page.slug === 'top-notice')
+
   return (
-    <DashboardLayout title={language === 'en' ? 'Pages Management' : 'পেজ ম্যানেজমেন্ট'}>
+    <DashboardLayout title={language === 'en' ? 'Page & Notice Management' : 'পেজ ও নোটিশ ম্যানেজমেন্ট'}>
       <div className="page-container">
         <PageHeader
-          title={language === 'en' ? 'Pages' : 'পেজসমূহ'}
-          subtitle={language === 'en' ? 'Manage your storefront pages like About Us, Privacy Policy, etc.' : 'আপনার স্টোরফ্রন্টের পেজগুলো পরিচালনা করুন (যেমন: আমাদের সম্পর্কে, শর্তাবলী ইত্যাদি)'}
+          title={language === 'en' ? 'Page & Notice' : 'পেজ ও নোটিশ'}
+          subtitle={language === 'en' ? 'Manage your storefront pages and marquee announcements' : 'আপনার স্টোরফ্রন্টের পেজ এবং স্ক্রলিং নোটিশসমূহ পরিচালনা করুন'}
         />
 
-        <div className="glass-card overflow-hidden">
-          {isLoading ? (
-            <div className="p-8 text-center text-muted-foreground animate-pulse">Loading pages...</div>
-          ) : (
-            <div className="divide-y divide-border">
-              {pages.map(page => (
-                <div key={page.id} className="p-5 flex items-center justify-between hover:bg-muted/20 transition-colors group">
-                  <div className="flex items-center gap-4">
-                    <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
-                      <FileText className="w-5 h-5 text-primary" />
+        <div className="space-y-8">
+          {/* Storefront Pages Section */}
+          <div className="space-y-3">
+            <SectionHeader title={language === 'en' ? 'Pages' : 'পেজসমূহ'} />
+            <div className="glass-card overflow-hidden">
+              {isLoading ? (
+                <div className="p-8 text-center text-muted-foreground animate-pulse">Loading pages...</div>
+              ) : (
+                <div className="divide-y divide-border">
+                  {standardPages.map(page => (
+                    <div key={page.id} className="p-5 flex items-center justify-between hover:bg-muted/20 transition-colors group">
+                      <div className="flex items-center gap-4">
+                        <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
+                          <FileText className="w-5 h-5 text-primary" />
+                        </div>
+                        <div>
+                          <p className="font-bold text-foreground text-[15px]">{language === 'en' ? page.title_en : page.title_bn}</p>
+                          <p className="text-xs text-muted-foreground mt-0.5">/{page.slug}</p>
+                        </div>
+                      </div>
+                      
+                      <button 
+                        onClick={() => handleEdit(page)}
+                        className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-accent/50 text-foreground text-xs font-semibold hover:bg-primary hover:text-white transition-all opacity-80 group-hover:opacity-100 shadow-sm"
+                      >
+                        <Pencil className="w-3.5 h-3.5" />
+                        {language === 'en' ? 'Edit' : 'এডিট'}
+                      </button>
                     </div>
-                    <div>
-                      <p className="font-bold text-foreground text-[15px]">{language === 'en' ? page.title_en : page.title_bn}</p>
-                      <p className="text-xs text-muted-foreground mt-0.5">/{page.slug}</p>
-                    </div>
-                  </div>
-                  
-                  <button 
-                    onClick={() => handleEdit(page)}
-                    className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-accent/50 text-foreground text-xs font-semibold hover:bg-primary hover:text-white transition-all opacity-80 group-hover:opacity-100"
-                  >
-                    <Pencil className="w-3.5 h-3.5" />
-                    {language === 'en' ? 'Edit' : 'এডিট'}
-                  </button>
+                  ))}
+                  {standardPages.length === 0 && !isLoading && (
+                    <div className="p-8 text-center text-muted-foreground">{language === 'en' ? 'No pages found' : 'কোনো পেজ পাওয়া যায়নি'}</div>
+                  )}
                 </div>
-              ))}
+              )}
             </div>
-          )}
+          </div>
+
+          {/* Marquee Notices Section */}
+          <div className="space-y-3">
+            <SectionHeader title={language === 'en' ? 'Notice' : 'নোটিশ'} />
+            <div className="glass-card overflow-hidden">
+              {isLoading ? (
+                <div className="p-8 text-center text-muted-foreground animate-pulse">Loading notices...</div>
+              ) : (
+                <div className="divide-y divide-border">
+                  {noticePages.map(page => (
+                    <div key={page.id} className="p-5 flex items-center justify-between hover:bg-muted/20 transition-colors group">
+                      <div className="flex items-center gap-4">
+                        <div className="w-10 h-10 rounded-xl bg-amber-500/10 flex items-center justify-center flex-shrink-0">
+                          <Megaphone className="w-5 h-5 text-amber-500" />
+                        </div>
+                        <div>
+                          <p className="font-bold text-foreground text-[15px]">{language === 'en' ? page.title_en : page.title_bn}</p>
+                          <p className="text-xs text-muted-foreground mt-0.5">/{page.slug}</p>
+                        </div>
+                      </div>
+                      
+                      <button 
+                        onClick={() => handleEdit(page)}
+                        className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-accent/50 text-foreground text-xs font-semibold hover:bg-primary hover:text-white transition-all opacity-80 group-hover:opacity-100 shadow-sm"
+                      >
+                        <Pencil className="w-3.5 h-3.5" />
+                        {language === 'en' ? 'Edit' : 'এডিট'}
+                      </button>
+                    </div>
+                  ))}
+                  {noticePages.length === 0 && !isLoading && (
+                    <div className="p-8 text-center text-muted-foreground">{language === 'en' ? 'No notices found' : 'কোনো নোটিশ পাওয়া যায়নি'}</div>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
         </div>
       </div>
       <style>{`.label { display:block; font-size:.8125rem; font-weight:500; color:hsl(var(--foreground)); margin-bottom:.375rem; } .input { width:100%; padding:.625rem .875rem; border-radius:.625rem; border:1px solid hsl(var(--border)); background:hsl(var(--muted)); color:hsl(var(--foreground)); font-size:.875rem; outline:none; }`}</style>
