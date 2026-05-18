@@ -1,0 +1,35 @@
+# System files
+.DS_Store
+Thumbs.db
+*.log
+
+# IDE files
+.idea/
+.vscode/
+
+# Local Environment Credentials
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Temp/Cache directories
+core/bootstrap/cache/*
+!core/bootstrap/cache/.gitignore
+core/storage/framework/cache/data/*
+!core/storage/framework/cache/data/.gitignore
+core/storage/framework/sessions/*
+!core/storage/framework/sessions/.gitignore
+core/storage/framework/testing/*
+!core/storage/framework/testing/.gitignore
+core/storage/framework/views/*
+!core/storage/framework/views/.gitignore
+core/storage/logs/*
+!core/storage/logs/.gitignore
+
+# Large compiled assets
+admin/.next/
+admin/node_modules/
+core/node_modules/
+core/vendor/
